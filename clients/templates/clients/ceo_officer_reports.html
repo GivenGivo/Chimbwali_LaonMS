@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Officer Reports - CEO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#5B21B6",
+                dark: "#7C3AED",
+              },
+              accent: "#06b6d4",
+              surface: {
+                DEFAULT: "#fff",
+                dark: "#18181b",
+              },
+            },
+            boxShadow: {
+              neu: "0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(91,33,182,0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+
+    <a 
+      href="{% url 'ceo_dashboard' %}" 
+      class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
+    >
+      <i class="fa-solid fa-house mr-1"></i> Back Home
+    </a>
+
+  <body
+    class="bg-gradient-to-bl from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen transition-colors duration-300 p-6"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+
+    <section
+      class="max-w-6xl mx-auto bg-white dark:bg-surface-dark shadow-neu rounded-3xl p-8 md:p-10"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2
+          class="text-2xl font-extrabold text-primary dark:text-accent flex items-center gap-2"
+        >
+          <i class="fa-solid fa-file-alt"></i> Officer Reports
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <form method="get" class="mb-6 flex flex-wrap items-center gap-4">
+          <label class="text-sm text-gray-700 dark:text-gray-200 font-semibold">
+            <i class="fa-solid fa-calendar-alt mr-1"></i> Filter by Date:
+          </label>
+          <input type="date" name="date" value="{{ selected_date }}"
+                class="rounded-lg border border-gray-300 dark:border-gray-700 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200" />
+          <button type="submit"
+                  class="bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-primary-dark text-white font-bold px-4 py-2 rounded-lg transition">
+            Apply
+          </button>
+          {% if selected_date %}
+          <a href="{% url 'view_officer_reports' %}"
+            class="text-sm text-blue-600 hover:underline ml-2">Clear Filter</a>
+          {% endif %}
+          <a href="{% url 'export_reports_xlsx' %}"
+            class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
+            <i class="fa-solid fa-file-excel mr-1"></i> Export to Excel
+          </a>
+
+        </form>
+
+        <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-200">
+          <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+            <tr>
+              <th class="px-4 py-3">Officer</th>
+              <th class="px-4 py-3">Date</th>
+              <th class="px-4 py-3">Expected (ZMW)</th>
+              <th class="px-4 py-3">Collected (ZMW)</th>
+              <th class="px-4 py-3">Advance (ZMW)</th>
+              <th class="px-4 py-3">Balance</th>
+              <th class="px-4 py-3">Accumulative</th>
+              <th class="px-4 py-3">Clients Owing</th>
+              <th class="px-4 py-3">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for report in reports %}
+            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+              <td class="px-4 py-3 font-semibold">{{ report.submitted_by.username }}</td>
+              <td class="px-4 py-3">{{ report.date|date:"M d, Y" }}</td>
+              <td class="px-4 py-3">{{ report.total_expected }}</td>
+              <td class="px-4 py-3">{{ report.total_collected }}</td>
+              <td class="px-4 py-3">{{ report.advance_payments }}</td>
+              <td class="px-4 py-3">{{ report.balance }}</td>
+              <td class="px-4 py-3">{{ report.accumulative_balance }}</td>
+              <td class="px-4 py-3">{{ report.clients_owing }}</td>
+              <td class="px-4 py-3">
+                {% if report.optional_note %}
+                  <button onclick="openReportModal('Note from {{ report.submitted_by.username }}', `{{ report.optional_note|linebreaksbr|escapejs }}`)"
+                    class="text-blue-600 hover:underline text-xs font-semibold">
+                    View Note
+                  </button>
+                {% else %}
+                  <span class="text-gray-400 italic text-xs">None</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="9" class="text-center py-4 text-gray-500 dark:text-gray-400">
+                No reports submitted yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+      
+
+    </section>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+
+    <script>
+      function openReportModal(title, content) {
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalBody").innerHTML = content;
+        document.getElementById("reportModal").classList.remove("hidden");
+      }
+
+      function closeReportModal() {
+        document.getElementById("reportModal").classList.add("hidden");
+      }
+    </script>
+    <!-- Modal for Viewing Notes -->
+    <div id="reportModal" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center px-4">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-neu max-w-lg w-full p-6 relative">
+        <button onclick="closeReportModal()" class="absolute top-3 right-4 text-gray-600 dark:text-gray-300 text-xl">
+          &times;
+        </button>
+        <h3 id="modalTitle" class="text-lg font-bold text-primary dark:text-accent mb-4"></h3>
+        <div id="modalBody" class="text-gray-700 dark:text-gray-200 text-sm leading-relaxed"></div>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Enable dark mode via class -->
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#5B21B6", // Vibrant purple
+                dark: "#7C3AED",
+              },
+              accent: "#06b6d4", // Cyan
+              surface: {
+                DEFAULT: "#fff",
+                dark: "#18181b",
+              },
+            },
+            boxShadow: {
+              neu: "0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(91,33,182,0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gradient-to-tr from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen flex items-center justify-center transition-colors duration-300"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+    <!-- Dark mode toggle -->
+    <button
+      id="darkToggle"
+      aria-label="Toggle dark mode"
+      class="absolute top-4 right-4 text-primary dark:text-accent bg-white dark:bg-surface-dark shadow-neu rounded-full p-2 focus:outline-none transition-colors duration-200"
+    >
+      <i id="darkIcon" class="fa-solid fa-moon"></i>
+    </button>
+
+    <main class="flex-1 flex items-center justify-center">
+      <section class="w-full max-w-md px-4">
+        <div
+          class="login-container bg-surface dark:bg-surface-dark rounded-3xl shadow-neu p-8 md:p-10 flex flex-col gap-6 items-center transition-colors duration-300"
+        >
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-4xl text-primary dark:text-accent mb-1"
+              ><i class="fa-solid fa-user-lock"></i
+            ></span>
+            <h2
+              class="login-title text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white"
+            >
+              Welcome Back
+            </h2>
+          </div>
+
+          {% if messages %}
+          <div class="login-messages w-full">
+            {% for message in messages %}
+            <p
+              class="error-message flex items-center gap-2 bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-200 font-medium px-4 py-2 rounded-md shadow mt-2"
+            >
+              <i class="fa-solid fa-circle-exclamation"></i>
+              {{ message }}
+            </p>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <form
+            method="POST"
+            class="login-form w-full flex flex-col gap-5 mt-2"
+          >
+            {% csrf_token %}
+            <div>
+              <label
+                for="username"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+              >
+                <i
+                  class="fa-solid fa-user text-primary dark:text-accent mr-1"
+                ></i>
+                Username
+              </label>
+              <input
+                type="text"
+                name="username"
+                id="username"
+                required
+                class="w-full rounded-xl px-4 py-3 bg-gray-50 dark:bg-surface-dark/80 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent transition shadow"
+                autocomplete="username"
+                placeholder="Enter your username"
+              />
+            </div>
+            <div>
+              <label
+                for="password"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1"
+              >
+                <i
+                  class="fa-solid fa-lock text-primary dark:text-accent mr-1"
+                ></i>
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                class="w-full rounded-xl px-4 py-3 bg-gray-50 dark:bg-surface-dark/80 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent transition shadow"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="mt-2 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-primary-dark text-white font-bold py-3 rounded-xl shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-accent transform hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              Login
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+    <script>
+      // Dark mode toggle logic
+      const darkToggle = document.getElementById("darkToggle");
+      const html = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+
+      function setDarkMode(enable) {
+        if (enable) {
+          html.classList.add("dark");
+          darkIcon.classList.remove("fa-moon");
+          darkIcon.classList.add("fa-sun");
+        } else {
+          html.classList.remove("dark");
+          darkIcon.classList.remove("fa-sun");
+          darkIcon.classList.add("fa-moon");
+        }
+      }
+      // Detect user/system preference
+      let dark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setDarkMode(dark);
+
+      darkToggle.addEventListener("click", () => {
+        dark = !html.classList.contains("dark");
+        setDarkMode(dark);
+      });
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+  </body>
+</html>
