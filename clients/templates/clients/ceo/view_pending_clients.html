@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Loans</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: { DEFAULT: "#5B21B6", dark: "#7C3AED" },
+              accent: "#06b6d4",
+              surface: { DEFAULT: "#fff", dark: "#18181b" },
+            },
+            boxShadow: {
+              neu: "0 4px 24px rgba(0,0,0,0.1), 0 1.5px 4px rgba(91,33,182,0.1)",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+    {% if messages %}
+        <div class="p-4 max-w-xl mx-auto">
+      {% for message in messages %}
+      <div class="mb-3 p-3 rounded-lg text-sm font-semibold
+                  {% if message.tags == 'success' %}bg-green-100 text-green-700
+                  {% elif message.tags == 'error' %}bg-red-100 text-red-700
+                  {% else %}bg-gray-100 text-gray-800{% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+        </div>
+    {% endif %}
+
+  <body
+    class="bg-gradient-to-tr from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen transition-colors duration-300 p-6"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <button
+      id="darkToggle"
+      aria-label="Toggle dark mode"
+      class="fixed top-4 right-4 z-20 text-primary dark:text-accent bg-white dark:bg-surface-dark shadow-neu rounded-full p-2"
+    >
+      <i id="darkIcon" class="fa-solid fa-moon"></i>
+    </button>
+
+    <a 
+      href="{% url 'ceo_dashboard' %}" 
+      class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
+    >
+      <i class="fa-solid fa-house mr-1"></i> Back Home
+    </a>
+
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+      <h1
+        class="text-3xl font-bold text-primary dark:text-accent flex items-center gap-2"
+      >
+        <i class="fa-solid fa-users-viewfinder"></i>
+        Loan Applications
+      </h1>
+    </header>
+
+    <!-- Client Table -->
+    <div class="overflow-x-auto">
+      <table
+        class="min-w-full bg-white dark:bg-surface-dark rounded-xl shadow-neu overflow-hidden"
+      >
+        <thead
+          class="bg-primary/10 dark:bg-accent/10 text-primary dark:text-accent"
+        >
+          <tr>
+            <th class="px-4 py-3 text-left">Name</th>
+            <th class="px-4 py-3 text-left">NRC</th>
+            <th class="px-4 py-3 text-left">Phone</th>
+            <th class="px-4 py-3 text-left">Amount</th>
+            <th class="px-4 py-3 text-left">Submitted</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody
+          class="divide-y divide-gray-200 dark:divide-gray-800 text-gray-700 dark:text-gray-300"
+        >
+          {% for item in pending_clients %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-surface-dark/70 transition">
+            <td class="px-4 py-3 font-medium">{{ item.client.full_name }}</td>
+            <td class="px-4 py-3">{{ item.client.nrc }}</td>
+            <td class="px-4 py-3">{{ item.client.phone_number }}</td>
+            <td class="px-4 py-3">ZMW {{ item.loan.amount }}</td>
+            <td class="px-4 py-3">{{ item.loan.created_at|date:"M d, Y" }}</td>
+            <td class="px-4 py-3 flex justify-center gap-2">
+              <form
+                method="POST"
+                action="{% url 'approve_loan' item.loan.id %}"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+                >
+                  <i class="fa-solid fa-check"></i> Approve
+                </button>
+              </form>
+              <form method="POST" action="{% url 'reject_loan' item.loan.id %}">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+                >
+                  <i class="fa-solid fa-xmark"></i> Reject
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Dark mode logic -->
+    <script>
+      const darkToggle = document.getElementById("darkToggle");
+      const html = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+
+      function setDarkMode(enable) {
+        if (enable) {
+          html.classList.add("dark");
+          darkIcon.classList.replace("fa-moon", "fa-sun");
+        } else {
+          html.classList.remove("dark");
+          darkIcon.classList.replace("fa-sun", "fa-moon");
+        }
+      }
+
+      let dark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setDarkMode(dark);
+
+      darkToggle.addEventListener("click", () => {
+        dark = !html.classList.contains("dark");
+        setDarkMode(dark);
+      });
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+  </body>
+</html>

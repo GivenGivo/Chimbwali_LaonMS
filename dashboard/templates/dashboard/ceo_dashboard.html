@@ -1,0 +1,519 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CEO Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#5B21B6",
+                dark: "#7C3AED",
+              },
+              accent: "#06b6d4",
+              surface: {
+                DEFAULT: "#fff",
+                dark: "#18181b",
+              },
+            },
+            boxShadow: {
+              neu: "0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(91,33,182,0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gradient-to-bl from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen transition-colors duration-300 flex"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+    <!-- Dark mode toggle -->
+    <button
+      id="darkToggle"
+      aria-label="Toggle dark mode"
+      class="fixed top-4 right-4 z-20 text-primary dark:text-accent bg-white dark:bg-surface-dark shadow-neu rounded-full p-2 focus:outline-none transition-colors duration-200"
+    >
+      <i id="darkIcon" class="fa-solid fa-moon"></i>
+    </button>
+
+    <aside
+      class="hidden md:flex flex-col w-64 bg-white dark:bg-surface-dark shadow-neu h-screen sticky top-0 py-8 px-6 transition-colors duration-300 z-10 overflow-y-auto"
+      style="scrollbar-width: thin; scrollbar-color: #7c3aed transparent"
+    >
+      <div class="flex items-center gap-3 mb-10 flex-shrink-0">
+        <span class="text-3xl text-primary dark:text-accent"
+          ><i class="fa-solid fa-crown"></i
+        ></span>
+        <span class="text-xl font-bold text-gray-900 dark:text-white"
+          >CEO Panel</span
+        >
+      </div>
+      <nav class="flex-1">
+        <ul class="flex flex-col gap-4 text-base font-medium">
+          <li>
+            <a
+              href="{% url 'view_pending_clients' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-users-viewfinder"></i>
+              Loan Applications
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'list_announcements' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-bullhorn"></i>
+              Announcements
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_reports_analytics' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-chart-line"></i>
+              Reports & Analytics
+            </a>
+          </li>
+
+          <!-- NEW NAVIGATION LINKS -->
+          <li>
+            <a
+              href="{% url 'view_all_clients' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-address-book"></i>
+              View All Clients
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_view_all_payments' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-money-check-dollar"></i>
+              View All Payments
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'view_officer_reports' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-file-alt"></i>
+              Officer Reports
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'expected_daily_amounts' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-calendar-day"></i>
+              Daily Amounts
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_accumulated_balances' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-layer-group"></i>
+              Balances
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_total_expected_funds' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-sack-dollar"></i>
+              Expected Funds
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_terms_and_conditions' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-file-contract"></i>
+              Terms &amp; Conditions
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'ceo_edit_profile' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-user-pen"></i>
+              Edit Profile
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'create_loan_officer' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+            >
+              <i class="fa-solid fa-user-plus"></i>
+              Create Loan Officer
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="{% url 'logout' %}"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition"
+            >
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Mobile Sidebar / Drawer -->
+    <div
+      id="mobileSidebar"
+      class="fixed inset-0 z-30 bg-black/30 dark:bg-black/50 transition-opacity duration-200 opacity-0 pointer-events-none md:hidden"
+    >
+      <aside
+        class="absolute top-0 left-0 w-64 bg-white dark:bg-surface-dark max-h-screen overflow-y-auto shadow-neu transform -translate-x-full transition-transform duration-300"
+      >
+
+        <nav class="flex-1 px-4 pb-6">
+          <ul class="flex flex-col gap-4 text-base font-medium">
+            <li>
+              <a
+                href="{% url 'view_pending_clients' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-users-viewfinder"></i>
+                Loan Applications
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'list_announcements' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-bullhorn"></i>
+                Announcements
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'ceo_reports_analytics' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-chart-line"></i>
+                Reports & Analytics
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'view_all_clients' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-address-book"></i>
+                View All Clients
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'ceo_view_all_payments' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-money-check-dollar"></i>
+                View All Payments
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'view_officer_reports' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-file-alt"></i>
+                Officer Reports
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'expected_daily_amounts' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-calendar-day"></i>
+                Daily Amounts
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'ceo_accumulated_balances' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-layer-group"></i>
+                Balances
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'ceo_total_expected_funds' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-sack-dollar"></i>
+                Expected Funds
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'ceo_terms_and_conditions' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-file-contract"></i>
+                Terms & Conditions
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="{% url 'ceo_edit_profile' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-user-pen"></i>
+                Edit Profile
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'create_loan_officer' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-primary dark:text-accent hover:bg-primary/10 dark:hover:bg-accent/10 transition"
+              >
+                <i class="fa-solid fa-user-plus"></i>
+                Create Loan Officer
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'logout' %}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition"
+              >
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-h-screen">
+      <!-- Header -->
+      <header
+        class="flex items-center justify-between px-6 py-6 md:py-8 bg-white/80 dark:bg-surface-dark/80 shadow-neu backdrop-blur z-10"
+      >
+        <div class="flex items-center gap-3">
+          <!-- Mobile menu button -->
+          <button
+            id="menuBtn"
+            class="block md:hidden text-primary dark:text-accent text-2xl focus:outline-none"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <span
+            class="text-2xl font-extrabold text-primary dark:text-accent tracking-tight"
+            >CEO Dashboard</span
+          >
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="font-medium text-gray-700 dark:text-gray-200">
+            <i
+              class="fa-solid fa-user-tie text-primary dark:text-accent mr-1"
+            ></i>
+            {{ request.user.username }}
+          </span>
+        </div>
+      </header>
+      <!-- Dashboard content -->
+      <main
+        class="flex-1 flex flex-col items-center justify-center px-4 py-10 md:py-12 bg-transparent"
+      >
+        <section
+          class="w-full max-w-2xl bg-white dark:bg-surface-dark rounded-3xl shadow-neu p-8 md:p-10 flex flex-col gap-6 transition-colors duration-300"
+        >
+          <!-- NEW DASHBOARD STATS & CHARTS SECTION -->
+          <div class="flex flex-col gap-6 mb-2">
+            <!-- Statistic Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Card 1 -->
+              <div
+                class="rounded-2xl shadow-neu bg-gradient-to-tr from-primary/10 via-accent/10 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark p-5 flex flex-col items-start transition-colors duration-300"
+              >
+                <span
+                  class="text-sm text-gray-500 dark:text-gray-300 font-medium mb-2 flex items-center gap-1"
+                >
+                  <i
+                    class="fa-solid fa-users text-primary dark:text-accent"
+                  ></i>
+                  Total Clients
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white"
+                  >{{ total_clients }}</span
+                >
+              </div>
+              <!-- Card 2 -->
+              <div
+                class="rounded-2xl shadow-neu bg-gradient-to-tr from-primary/10 via-accent/10 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark p-5 flex flex-col items-start transition-colors duration-300"
+              >
+                <span
+                  class="text-sm text-gray-500 dark:text-gray-300 font-medium mb-2 flex items-center gap-1"
+                >
+                  <i
+                    class="fa-solid fa-hourglass-half text-primary dark:text-accent"
+                  ></i>
+                  Pending Loan Approvals
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white"
+                  >{{ pending_loans }}</span
+                >
+              </div>
+              <!-- Card 3 -->
+              <div
+                class="rounded-2xl shadow-neu bg-gradient-to-tr from-primary/10 via-accent/10 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark p-5 flex flex-col items-start transition-colors duration-300"
+              >
+                <span
+                  class="text-sm text-gray-500 dark:text-gray-300 font-medium mb-2 flex items-center gap-1"
+                >
+                  <i
+                    class="fa-solid fa-coins text-primary dark:text-accent"
+                  ></i>
+                  Total Expected ZMW
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white"
+                  >{{ total_expected|floatformat:2 }}</span
+                >
+              </div>
+              <!-- Card 4 -->
+              <div class="rounded-2xl shadow-neu bg-gradient-to-tr from-primary/10 via-accent/10 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark p-5 flex flex-col items-start transition-colors duration-300">
+                <span class="text-sm text-gray-500 dark:text-gray-300 font-medium mb-2 flex items-center gap-1">
+                  <i class="fa-solid fa-user-clock text-primary dark:text-accent"></i>
+                  Pending Registrations
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {{ pending_clients }}
+                </span>
+              </div>
+              <!-- Card 5 -->
+               <!-- Active Loans -->
+              <div class="rounded-2xl shadow-neu bg-gradient-to-tr from-primary/10 via-accent/10 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark p-5 flex flex-col items-start transition-colors duration-300">
+                <span class="text-sm text-gray-500 dark:text-gray-300 font-medium mb-2 flex items-center gap-1">
+                  <i class="fa-solid fa-bolt text-primary dark:text-accent"></i>
+                  Active Loans
+                </span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {{ active_loans }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      // Dark mode toggle logic
+      const darkToggle = document.getElementById("darkToggle");
+      const html = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+
+      function setDarkMode(enable) {
+        if (enable) {
+          html.classList.add("dark");
+          darkIcon.classList.remove("fa-moon");
+          darkIcon.classList.add("fa-sun");
+        } else {
+          html.classList.remove("dark");
+          darkIcon.classList.remove("fa-sun");
+          darkIcon.classList.add("fa-moon");
+        }
+      }
+      // Detect user/system preference
+      let dark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setDarkMode(dark);
+
+      darkToggle.addEventListener("click", () => {
+        dark = !html.classList.contains("dark");
+        setDarkMode(dark);
+      });
+
+      // Mobile sidebar open/close
+      const menuBtn = document.getElementById("menuBtn");
+      const mobileSidebar = document.getElementById("mobileSidebar");
+      if (menuBtn && mobileSidebar) {
+        menuBtn.addEventListener("click", () => {
+          mobileSidebar.classList.toggle("opacity-0");
+          mobileSidebar.classList.toggle("pointer-events-none");
+          const aside = mobileSidebar.querySelector("aside");
+          if (mobileSidebar.classList.contains("opacity-0")) {
+            aside.classList.add("-translate-x-full");
+          } else {
+            aside.classList.remove("-translate-x-full");
+          }
+        });
+        mobileSidebar.addEventListener("click", (e) => {
+          if (e.target === mobileSidebar) {
+            mobileSidebar.classList.add("opacity-0");
+            mobileSidebar.classList.add("pointer-events-none");
+            mobileSidebar
+              .querySelector("aside")
+              .classList.add("-translate-x-full");
+          }
+        });
+      }
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,382 @@
+{% load crispy_forms_tags %} {% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register New Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: { DEFAULT: "#5B21B6", dark: "#7C3AED" },
+              accent: "#06b6d4",
+              surface: { DEFAULT: "#fff", dark: "#18181b" },
+            },
+            boxShadow: {
+              neu: "0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(91,33,182,0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gradient-to-tr from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen flex flex-col transition-colors duration-300"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+
+    <!-- Dark mode toggle -->
+    <button
+      id="darkToggle"
+      aria-label="Toggle dark mode"
+      class="fixed top-4 right-4 z-20 text-primary dark:text-accent bg-white dark:bg-surface-dark shadow-neu rounded-full p-2 focus:outline-none transition-colors duration-200"
+    >
+      <i id="darkIcon" class="fa-solid fa-moon"></i>
+    </button>
+
+    <header
+      class="w-full flex items-center justify-between px-6 py-5 bg-white/80 dark:bg-surface-dark/80 shadow-neu backdrop-blur z-10 mb-4"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-2xl text-primary dark:text-accent"
+          ><i class="fa-solid fa-user-plus"></i
+        ></span>
+        <span
+          class="text-xl font-extrabold text-primary dark:text-accent tracking-tight"
+          >Register Client</span
+        >
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-gray-700 dark:text-gray-200">
+          <i class="fa-solid fa-user text-primary dark:text-accent mr-1"></i>
+          {{ request.user.username }}
+        </span>
+      </div>
+    </header>
+
+    <a
+      href="{% url 'officer_dashboard' %}"
+      class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
+    >
+      <i class="fa-solid fa-house mr-1"></i> Back Home
+    </a>
+
+    {% if messages %}
+    <div
+      id="popup-message-container"
+      class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50"
+    >
+      {% for message in messages %}
+      <div
+        id="popup-message"
+        class="mb-3 p-3 rounded-lg text-sm font-semibold shadow-lg transition-opacity duration-500 {% if message.tags == 'success' %}bg-green-100 text-green-700 {% elif message.tags == 'error' %}bg-red-100 text-red-700 {% else %}bg-gray-100 text-gray-800{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const popup = document.getElementById("popup-message");
+        if (popup) {
+          setTimeout(function () {
+            popup.style.opacity = "0";
+            popup.style.transition = "opacity 0.5s";
+            setTimeout(function () {
+              popup.remove();
+            }, 500);
+          }, 2500);
+        }
+      });
+    </script>
+    {% endif %}
+    <main
+      class="flex-1 flex flex-col items-center justify-center px-4 py-10 md:py-12"
+    >
+      <section
+        class="w-full max-w-2xl bg-white dark:bg-surface-dark rounded-3xl shadow-neu p-8 md:p-10 flex flex-col gap-6 transition-colors duration-300"
+      >
+        <div class="mb-6">
+          <h1
+            class="text-2xl md:text-3xl font-extrabold text-primary dark:text-accent flex items-center gap-3 mb-2"
+          >
+            <i class="fa-solid fa-user-plus"></i> Register New Client
+          </h1>
+          <p class="text-gray-500 dark:text-gray-300 text-base">
+            Fill out all required fields below to register a new client.
+          </p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-8">
+          {% csrf_token %}
+
+          <!-- Client Info -->
+          <fieldset
+            class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-4 shadow-sm"
+          >
+            <legend
+              class="text-lg font-semibold text-primary dark:text-accent flex items-center gap-2 px-2"
+            >
+              <i class="fa-solid fa-user"></i> Client Info
+            </legend>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label
+                  for="{{ form.full_name.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-id-card"></i> Full Name
+                </label>
+                {{ form.full_name|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.nrc.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-id-card-clip"></i> NRC
+                </label>
+                {{ form.nrc|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.phone_number.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-phone"></i> Phone
+                </label>
+                {{ form.phone_number|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.passport_photo.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-image"></i> Passport
+                </label>
+                {{ form.passport_photo|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.signature.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-pen-nib"></i> Signature
+                </label>
+                {{ form.signature|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.business_name.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-briefcase"></i> Business Name
+                </label>
+                {{ form.business_name|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.address.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-location-dot"></i> Address
+                </label>
+                {{ form.address|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.marital_status.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-heart"></i> Marital Status
+                </label>
+                {{ form.marital_status|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.relationship_with_witness.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-people-arrows"></i> Relationship with
+                  Witness
+                </label>
+                {{ form.relationship_with_witness|as_crispy_field }}
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Surety Info -->
+          <fieldset
+            class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-4 shadow-sm"
+          >
+            <legend
+              class="text-lg font-semibold text-primary dark:text-accent flex items-center gap-2 px-2"
+            >
+              <i class="fa-solid fa-shield-halved"></i> Surety Info
+            </legend>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label
+                  for="{{ form.surety_name.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-user-shield"></i> Surety Name
+                </label>
+                {{ form.surety_name|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.surety_value.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-dollar-sign"></i> Surety Value
+                </label>
+                {{ form.surety_value|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.surety_make.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-car"></i> Surety Make
+                </label>
+                {{ form.surety_make|as_crispy_field }}
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Witness Info -->
+          <fieldset
+            class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-4 shadow-sm"
+          >
+            <legend
+              class="text-lg font-semibold text-primary dark:text-accent flex items-center gap-2 px-2"
+            >
+              <i class="fa-solid fa-user-check"></i> Witness Info
+            </legend>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label
+                  for="{{ form.witness_name.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-user"></i> Full Name
+                </label>
+                {{ form.witness_name|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.witness_nrc.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-id-card-clip"></i> NRC
+                </label>
+                {{ form.witness_nrc|as_crispy_field }}
+              </div>
+              <div>
+                <label
+                  for="{{ form.witness_phone.id_for_label }}"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
+                >
+                  <i class="fa-solid fa-phone"></i> Phone
+                </label>
+                {{ form.witness_phone|as_crispy_field }}
+              </div>
+            </div>
+          </fieldset>
+
+          {% if form.errors %}
+          <div class="mb-4">
+            <ul
+              class="text-sm text-red-600 dark:text-red-400 font-semibold space-y-1"
+            >
+              {% for field in form %} {% for error in field.errors %}
+              <li>
+                <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ error }}
+              </li>
+              {% endfor %} {% endfor %} {% for error in form.non_field_errors %}
+              <li>
+                <i class="fa-solid fa-circle-exclamation mr-1"></i>{{ error }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="flex items-center gap-2 bg-primary hover:bg-primary-dark dark:bg-accent dark:hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-xl shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-accent transform hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              <i class="fa-solid fa-paper-plane"></i> Submit
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      const darkToggle = document.getElementById("darkToggle");
+      const html = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+
+      function setDarkMode(enable) {
+        if (enable) {
+          html.classList.add("dark");
+          darkIcon.classList.remove("fa-moon");
+          darkIcon.classList.add("fa-sun");
+        } else {
+          html.classList.remove("dark");
+          darkIcon.classList.remove("fa-sun");
+          darkIcon.classList.add("fa-moon");
+        }
+      }
+
+      let dark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setDarkMode(dark);
+
+      darkToggle.addEventListener("click", () => {
+        dark = !html.classList.contains("dark");
+        setDarkMode(dark);
+      });
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+  </body>
+</html>

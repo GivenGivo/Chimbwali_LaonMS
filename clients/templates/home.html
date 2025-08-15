@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Loan Payment System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'images/logo-icon.png' %}"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#5B21B6",
+                dark: "#7C3AED",
+              },
+              accent: "#06b6d4",
+              surface: {
+                DEFAULT: "#fff",
+                dark: "#18181b",
+              },
+            },
+            boxShadow: {
+              neu: "0 4px 24px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(91,33,182,0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-bl from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark transition-colors duration-300"
+  >
+    <div
+      id="preloader"
+      class="fixed inset-0 flex items-center justify-center bg-blue z-50"
+    >
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="Company Logo"
+        class="animate-spin w-20 h-20"
+      />
+    </div>
+
+    <!-- Dark mode toggle -->
+    <button
+      id="darkToggle"
+      aria-label="Toggle dark mode"
+      class="fixed bottom-4 right-4 z-30 text-primary dark:text-accent bg-white dark:bg-surface-dark shadow-neu rounded-full p-3 focus:outline-none transition-colors duration-200"
+    >
+      <i id="darkIcon" class="fa-solid fa-moon text-lg"></i>
+    </button>
+
+    <!-- Header -->
+    <header
+      class="w-full flex items-center justify-between px-4 md:px-12 py-6 bg-transparent"
+    >
+      <div class="flex items-center gap-3">
+        <span
+          class="text-2xl md:text-3xl text-primary dark:text-accent font-extrabold tracking-tight"
+        >
+          <i class="fa-solid fa-building-columns mr-2"></i>
+          Chimbwali General Trading
+        </span>
+      </div>
+      <div>
+        <a
+          href="{% url 'login' %}"
+          class="inline-flex items-center gap-2 px-5 py-2 rounded-xl shadow-neu bg-primary text-white font-semibold hover:bg-primary-dark dark:bg-accent dark:hover:bg-primary-dark transition"
+        >
+          <i class="fa-solid fa-sign-in-alt"></i>
+          Login
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main
+      class="w-full max-w-2xl mx-auto px-4 md:px-0 py-8 flex flex-col gap-10"
+    >
+      <!-- Welcome Section -->
+      <section class="mb-4">
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+        >
+          <div>
+            <h1
+              class="text-2xl md:text-3xl font-extrabold text-primary dark:text-accent mb-1"
+            >
+              Welcome to the Loan Payment System
+            </h1>
+            <p class="text-base text-gray-600 dark:text-gray-300">
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Terms and Conditions Card -->
+      <section class="mb-6">
+        <div
+          class="rounded-3xl bg-white dark:bg-surface-dark shadow-neu p-8 md:p-10 border border-gray-100 dark:border-gray-800 transition-colors duration-300"
+        >
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xl text-primary dark:text-accent">
+              <i class="fa-solid fa-file-contract"></i>
+            </span>
+            <h2
+              class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white"
+            >
+              Terms &amp; Conditions
+            </h2>
+          </div>
+          <div
+            class="prose max-w-none text-gray-700 dark:text-gray-100 prose-headings:text-lg prose-headings:font-bold dark:prose-headings:text-accent prose-a:text-primary dark:prose-a:text-accent prose-li:marker:text-primary/80 dark:prose-li:marker:text-accent/80 prose-blockquote:border-primary/50 dark:prose-blockquote:border-accent/60"
+          >
+            {{ terms.content|safe }}
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest Announcements -->
+      <section>
+        <div class="mb-4 flex items-center gap-3">
+          <span class="text-lg text-primary dark:text-accent">
+            <i class="fa-solid fa-bullhorn"></i>
+          </span>
+          <h2
+            class="text-lg md:text-xl font-bold text-gray-800 dark:text-white"
+          >
+            Latest Announcements
+          </h2>
+        </div>
+        <div class="flex flex-col gap-4">
+          {% for announcement in announcements %}
+          <div
+            class="rounded-2xl bg-gradient-to-tr from-primary/5 via-accent/5 to-white dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark border border-gray-100 dark:border-gray-800 shadow p-5 transition-colors duration-300"
+          >
+            <div class="flex items-center gap-3 mb-1">
+              <span
+                class="text-base font-semibold text-primary dark:text-accent"
+              >
+                <i class="fa-solid fa-circle-info"></i>
+              </span>
+              <span
+                class="text-md md:text-lg font-semibold text-gray-900 dark:text-white"
+              >
+                {{ announcement.title }}
+              </span>
+            </div>
+            <div class="ml-7 mb-2 text-gray-700 dark:text-gray-200 text-base">
+              {{ announcement.message }}
+            </div>
+            <div
+              class="flex items-center ml-7 gap-2 text-xs text-gray-400 dark:text-gray-400"
+            >
+              <i class="fa-regular fa-clock"></i>
+              <span>{{ announcement.created_at }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div
+            class="rounded-xl bg-white/70 dark:bg-surface-dark/80 p-5 text-center text-gray-400 dark:text-gray-500"
+          >
+            <i class="fa-regular fa-face-smile-wink text-xl mr-2"></i>No
+            announcements yet.
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // Dark mode toggle logic
+      const darkToggle = document.getElementById("darkToggle");
+      const html = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+
+      function setDarkMode(enable) {
+        if (enable) {
+          html.classList.add("dark");
+          darkIcon.classList.remove("fa-moon");
+          darkIcon.classList.add("fa-sun");
+        } else {
+          html.classList.remove("dark");
+          darkIcon.classList.remove("fa-sun");
+          darkIcon.classList.add("fa-moon");
+        }
+      }
+      // Detect user/system preference
+      let dark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setDarkMode(dark);
+
+      darkToggle.addEventListener("click", () => {
+        dark = !html.classList.contains("dark");
+        setDarkMode(dark);
+      });
+    </script>
+    <script>
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          preloader.style.visibility = "hidden";
+          preloader.style.transition = "opacity 0.5s ease";
+
+          // Optionally, remove from DOM after transition ends
+          setTimeout(() => preloader.remove(), 600);
+        }
+      });
+    </script>
+  </body>
+</html>
