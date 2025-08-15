@@ -77,13 +77,19 @@
       </div>
     </header>
 
+<<<<<<< HEAD
     <a
       href="{% url 'officer_dashboard' %}"
+=======
+    <a 
+      href="{% url 'officer_dashboard' %}" 
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
       class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
     >
       <i class="fa-solid fa-house mr-1"></i> Back Home
     </a>
 
+<<<<<<< HEAD
     {% if messages %}
     <div
       id="popup-message-container"
@@ -113,6 +119,8 @@
       });
     </script>
     {% endif %}
+=======
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
     <main
       class="flex-1 flex flex-col items-center justify-center px-4 py-10 md:py-12"
     >
@@ -175,7 +183,11 @@
                   for="{{ form.passport_photo.id_for_label }}"
                   class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
                 >
+<<<<<<< HEAD
                   <i class="fa-solid fa-image"></i> Passport
+=======
+                  <i class="fa-solid fa-image "></i> Passport
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
                 </label>
                 {{ form.passport_photo|as_crispy_field }}
               </div>
@@ -220,8 +232,12 @@
                   for="{{ form.relationship_with_witness.id_for_label }}"
                   class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-2"
                 >
+<<<<<<< HEAD
                   <i class="fa-solid fa-people-arrows"></i> Relationship with
                   Witness
+=======
+                  <i class="fa-solid fa-people-arrows"></i> Relationship with Witness
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
                 </label>
                 {{ form.relationship_with_witness|as_crispy_field }}
               </div>

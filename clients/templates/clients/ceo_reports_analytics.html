@@ -54,8 +54,13 @@
       />
     </div>
 
+<<<<<<< HEAD
     <a
       href="{% url 'ceo_dashboard' %}"
+=======
+    <a 
+      href="{% url 'ceo_dashboard' %}" 
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
       class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
     >
       <i class="fa-solid fa-house mr-1"></i> Back Home
@@ -113,19 +118,26 @@
         </form>
 
         <!-- Export Button -->
+<<<<<<< HEAD
         <div class="flex justify-end mb-4 gap-2">
+=======
+        <div class="flex justify-end mb-4">
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
           <a
             href="?{% if request.GET.date %}date={{ request.GET.date }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}export=pdf"
             class="inline-flex items-center gap-2 bg-primary dark:bg-accent text-white font-semibold py-2 px-5 rounded-lg shadow hover:shadow-lg transition"
           >
             <i class="fa-solid fa-file-pdf"></i> Export PDF
           </a>
+<<<<<<< HEAD
           <a
             href="?{% if request.GET.date %}date={{ request.GET.date }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}export=xlsx"
             class="inline-flex items-center gap-2 bg-green-600 dark:bg-green-500 text-white font-semibold py-2 px-5 rounded-lg shadow hover:shadow-lg transition"
           >
             <i class="fa-solid fa-file-excel"></i> Export XLSX
           </a>
+=======
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
         </div>
 
         <!-- Payment Table -->
@@ -155,6 +167,7 @@
             <tbody>
               {% for day in repayment_days %}
               <tr class="hover:bg-primary/5 dark:hover:bg-accent/10 transition">
+<<<<<<< HEAD
                 <td
                   class="px-4 py-2 border border-gray-300 dark:border-gray-600"
                 >
@@ -168,6 +181,15 @@
                 <td
                   class="px-4 py-2 border border-gray-300 dark:border-gray-600"
                 >
+=======
+                <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">
+                  {{ day.loan.client.full_name }}
+                </td>
+                <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">
+                  {{ day.amount_paid|floatformat:2 }}
+                </td>
+                <td class="px-4 py-2 border border-gray-300 dark:border-gray-600">
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
                   {{ day.date|date:"M d, Y" }}
                 </td>
               </tr>
@@ -178,6 +200,10 @@
                 </td>
               </tr>
               {% endfor %}
+<<<<<<< HEAD
+=======
+
+>>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
             </tbody>
           </table>
         </div>
