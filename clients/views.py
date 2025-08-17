@@ -1075,10 +1075,8 @@ from .models import LoanRepaymentDay
 
 @require_POST
 @login_required
-=======
 @csrf_exempt
 @require_POST
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
 def mark_repayment_day_paid(request, day_id):
     try:
         repayment_day = get_object_or_404(LoanRepaymentDay, id=day_id)
