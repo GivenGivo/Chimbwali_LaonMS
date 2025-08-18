@@ -127,10 +127,6 @@ class CEOEditProfileForm(forms.ModelForm):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         if password:
-<<<<<<< HEAD
-=======
-            # Add any password validation here if needed
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
             return password
         return None
 

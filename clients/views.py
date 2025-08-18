@@ -1,4 +1,3 @@
-
 from decimal import Decimal
 from django.db import transaction
     
@@ -71,6 +70,7 @@ import io
 from datetime import datetime, date
 from reportlab.pdfgen import canvas
 
+
 @login_required
 def register_client(request):
     if request.user.role != 'OFFICER':
@@ -110,34 +110,19 @@ def submit_daily_report(request):
     clients_owing = 0
 
     # Calculate expected amount for today
-
-    approved_clients = Client.objects.filter(created_by=user, approved=True)
-    total_expected = Decimal('0.00')
-    total_collected = Decimal('0.00')
-    clients_owing = 0
-
-
     for client in approved_clients:
         loan = client.loans.filter(approved=True).order_by('-created_at').first()
         if not loan or loan.created_at.date() == today:
             continue
         if today.strftime('%A').upper() == loan.exempt_day.upper():
             continue
-
         today_day = loan.repayment_days.filter(date=today).first()
         if not today_day:
             continue
-
-        today_day = loan.repayment_days.filter(date=today).first()
-        if not today_day:
-            continue
-
-
         previous_paid_day = loan.repayment_days.filter(date__lt=today, is_paid=True).order_by('-date').first()
         carry_forward = Decimal('0.00')
         if previous_paid_day:
             carry_forward = (previous_paid_day.amount_due or 0) - (previous_paid_day.amount_paid or 0)
-
         effective_due_today = (today_day.amount_due or 0) + carry_forward
         total_expected += effective_due_today
         if not today_day.is_paid:
@@ -159,24 +144,6 @@ def submit_daily_report(request):
     # Balance: expected - collected (if negative, set to 0)
     balance = total_expected - (total_collected - advance_payments)
     if balance < 0:
-
-
-        effective_due_today = (today_day.amount_due or 0) + carry_forward
-        total_expected += effective_due_today
-
-        if today_day.is_paid:
-            total_collected += today_day.amount_paid or 0
-        else:
-            clients_owing += 1
-
-    if total_collected > total_expected:
-        advance_payments = total_collected - total_expected
-        balance = Decimal('0.00')
-    elif total_collected < total_expected:
-        balance = total_expected - total_collected
-        advance_payments = Decimal('0.00')
-    else:
-        advance_payments = Decimal('0.00')
         balance = Decimal('0.00')
 
     accumulative_collected = LoanRepaymentDay.objects.filter(
@@ -188,13 +155,10 @@ def submit_daily_report(request):
 
     if request.method == 'POST':
         optional_note = request.POST.get('optional_note', '').strip()
-
-
         if report_instance:
             report = report_instance
         else:
             report = DailyReport(submitted_by=user, date=today)
-
         report.total_expected = total_expected
         report.total_collected = total_collected
         report.advance_payments = advance_payments
@@ -204,14 +168,8 @@ def submit_daily_report(request):
         report.optional_note = optional_note
         report.is_submitted = True
         report.save()
-
         messages.success(request, " Daily report submitted.")
         return redirect('submit_daily_report')
-
-
-        messages.success(request, " Daily report submitted.")
-        return redirect('submit_daily_report')
-
 
     initial_note = ''
     if report_instance and not report_instance.is_submitted:
@@ -475,29 +433,6 @@ def ceo_reports_analytics(request):
             wb.save(response)
             return response
 
-    if 'export' in request.GET and request.GET['export'] == 'pdf':
-        buffer = io.BytesIO()
-        p = canvas.Canvas(buffer)
-        p.setFont("Helvetica", 12)
-        y = 800
-        p.drawString(100, y, f"Loan Repayment Report - {datetime.now().date()}")
-        y -= 30
-        for day in paid_days:
-            paid_amount = day.amount_paid or Decimal('0.00')
-            p.drawString(
-                100, y,
-                f"{day.loan.client.full_name} - ZMW {paid_amount:.2f} on {day.date.strftime('%Y-%m-%d')}"
-            )
-            y -= 20
-            if y < 50:
-                p.showPage()
-                y = 800
-        p.drawString(100, y-20, f"Total Collected: ZMW {total_amount:.2f}")
-        p.showPage()
-        p.save()
-        buffer.seek(0)
-        return HttpResponse(buffer, content_type='application/pdf')
-
     return render(request, 'clients/ceo_reports_analytics.html', {
         'repayment_days': paid_days,
         'total_amount': round(total_amount, 2),
@@ -514,7 +449,6 @@ User = get_user_model()
 def view_all_clients(request):
     form = ClientFilterForm(request.GET or None)
     clients = Client.objects.all().order_by('-created_at')
-
 
     # Officer filter
     if form.is_valid():
@@ -1065,6 +999,7 @@ def get_repayment_days(request, loan_id):
 
     return JsonResponse(data, safe=False)
 
+
 from decimal import Decimal, InvalidOperation
 import json
 from django.shortcuts import get_object_or_404
@@ -1075,8 +1010,6 @@ from .models import LoanRepaymentDay
 
 @require_POST
 @login_required
-@csrf_exempt
-@require_POST
 def mark_repayment_day_paid(request, day_id):
     try:
         repayment_day = get_object_or_404(LoanRepaymentDay, id=day_id)
@@ -1088,15 +1021,11 @@ def mark_repayment_day_paid(request, day_id):
             )
 
         # Parse payment amount from request
-
-            return JsonResponse({'success': False, 'error': 'This day has already been marked as paid.'}, status=400)
-
         try:
             data = json.loads(request.body)
             raw_amount = data.get('amount_paid')
             amount_paid = Decimal(str(raw_amount)) if raw_amount else repayment_day.amount_due
         except (json.JSONDecodeError, InvalidOperation):
-
             return JsonResponse(
                 {'success': False, 'error': 'Invalid payment amount.'},
                 status=400
@@ -1172,47 +1101,13 @@ def mark_repayment_day_paid(request, day_id):
         return JsonResponse({
             'success': True,
             'message': f"Payment of ZMW {amount_paid:.2f} processed.",
-
-            return JsonResponse({'success': False, 'error': 'Invalid payment amount.'}, status=400)
-
-        # Mark current day as paid
-        repayment_day.amount_paid = amount_paid
-        repayment_day.is_paid = True
-        repayment_day.marked_at = timezone.now()
-        repayment_day.marked_by = request.user if request.user.is_authenticated else None
-        repayment_day.save()
-
-        delta = amount_paid - (repayment_day.amount_due + (repayment_day.balance_carried_forward or Decimal('0.00')))
-
-        future_days = repayment_day.loan.repayment_days.filter(
-            is_paid=False,
-            date__gt=repayment_day.date
-        ).order_by('date')
-
-        if delta != 0 and future_days.exists():
-            next_day = future_days.first()
-
-            if next_day.balance_carried_forward is None:
-                next_day.balance_carried_forward = Decimal("0.00")
-
-            if delta < 0:
-                next_day.balance_carried_forward += abs(delta)
-            else:
-                next_day.balance_carried_forward -= delta
-
-            next_day.save()
-
-        return JsonResponse({
-            'success': True,
-            'message': f"Payment of ZMW {amount_paid:.2f} recorded for {repayment_day.date}.",
-            'adjustment': f"{'Shortfall' if delta < 0 else 'Excess'} of ZMW {abs(delta):.2f} {'carried to' if delta < 0 else 'deducted from'} next day." if delta != 0 else "Exact amount paid.",
-            'date': repayment_day.date.strftime('%Y-%m-%d'),
-
             'amount_paid': float(amount_paid),
         })
 
     except LoanRepaymentDay.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Repayment day not found.'}, status=404)
+
+
 
 
 @login_required

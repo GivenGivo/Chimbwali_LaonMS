@@ -34,7 +34,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
   </head>
-<<<<<<< HEAD
   {% if messages %}
   <div
     id="popup-message-container"
@@ -71,28 +70,6 @@
     <i class="fa-solid fa-house mr-1"></i> Back Home
   </a>
 
-=======
-    {% if messages %}
-        <div class="p-4 max-w-xl mx-auto">
-      {% for message in messages %}
-      <div class="mb-3 p-3 rounded-lg text-sm font-semibold
-                  {% if message.tags == 'success' %}bg-green-100 text-green-700
-                  {% elif message.tags == 'error' %}bg-red-100 text-red-700
-                  {% else %}bg-gray-100 text-gray-800{% endif %}">
-        {{ message }}
-      </div>
-      {% endfor %}
-        </div>
-    {% endif %}
-    <a 
-      href="{% url 'ceo_dashboard' %}" 
-      class="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
-    >
-      <i class="fa-solid fa-house mr-1"></i> Back Home
-    </a>
-    
-  
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
   <body
     class="bg-gradient-to-bl from-primary/10 via-accent/10 to-slate-100 dark:from-surface-dark dark:via-primary-dark/10 dark:to-surface-dark min-h-screen transition-colors duration-300 flex items-center justify-center px-4 py-10"
   >
@@ -106,10 +83,6 @@
         class="animate-spin w-20 h-20"
       />
     </div>
-<<<<<<< HEAD
-=======
-    
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
 
     <button
       id="darkToggle"

@@ -10,11 +10,7 @@
       rel="icon"
       type="image/png"
       href="{% static 'images/logo-icon.png' %}"
-<<<<<<< HEAD
     /> 
-=======
-    />
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
 
     <script>
       tailwind.config = {
@@ -61,7 +57,6 @@
       <i id="darkIcon" class="fa-solid fa-moon"></i>
     </button>
       {% if messages %}
-<<<<<<< HEAD
         <div id="popup-message-container" class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50">
           {% for message in messages %}
           <div id="popup-message" class="mb-3 p-3 rounded-lg text-sm font-semibold shadow-lg transition-opacity duration-500
@@ -87,19 +82,6 @@
           });
         </script>
       {% endif %}
-=======
-        <div class="p-4 max-w-xl mx-auto">
-      {% for message in messages %}
-      <div class="mb-3 p-3 rounded-lg text-sm font-semibold
-                  {% if message.tags == 'success' %}bg-green-100 text-green-700
-                  {% elif message.tags == 'error' %}bg-red-100 text-red-700
-                  {% else %}bg-gray-100 text-gray-800{% endif %}">
-        {{ message }}
-      </div>
-      {% endfor %}
-        </div>
-    {% endif %}
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
 
     <a 
       href="{% url 'officer_dashboard' %}" 
@@ -516,7 +498,6 @@
       let activeLoanId = null;  // Track the currently active loan ID globally
 
       async function loadRepaymentDays(loanId) {
-<<<<<<< HEAD
           const container = document.getElementById("repaymentDaysContainer");
           container.innerHTML = `<p class="text-gray-500">Loading...</p>`;
           activeLoanId = loanId;
@@ -612,129 +593,6 @@
               console.error(e);
               container.innerHTML = `<p class="text-red-500">Failed to load data.</p>`;
           }
-=======
-        const container = document.getElementById("repaymentDaysContainer");
-        container.innerHTML = `<p class="text-gray-500">Loading...</p>`;
-        activeLoanId = loanId;  // Update active loan ID every time modal is opened
-
-        try {
-          const response = await fetch(`/api/loan/${loanId}/repayment-days/`);
-          const days = await response.json();
-
-          if (!days.length) {
-            container.innerHTML = `<p class="text-red-500">No repayment days found.</p>`;
-            return;
-          }
-
-          const today = new Date().toISOString().slice(0, 10);
-          let carryForward = 0;
-          let carryApplied = false;
-          const html = [];
-
-          for (let i = 0; i < days.length; i++) {
-            const day = days[i];
-            const isToday = day.date === today;
-            const isPast = day.date < today;
-            const isFuture = day.date > today;
-            const showForm = !day.is_paid && (isToday || isPast);
-
-            const due = parseFloat(day.amount_due || 0);
-            const paid = parseFloat(day.amount_paid || 0);
-            const originalCarry = parseFloat(day.balance_carried_forward || 0);
-
-            let effectiveDue = due;
-
-            if (day.is_paid) {
-              effectiveDue = due + originalCarry;
-            } else if (!carryApplied && carryForward !== 0) {
-              effectiveDue = due + carryForward;
-              carryApplied = true;
-            }
-
-            const shortfall = paid < effectiveDue ? effectiveDue - paid : 0;
-            const excess = paid > effectiveDue ? paid - effectiveDue : 0;
-
-            const status = day.is_paid
-              ? "Paid"
-              : (isPast ? "Unpaid (Late)" : "Unpaid");
-
-            const statusColor = day.is_paid
-              ? "text-green-600 dark:text-green-400"
-              : isPast
-              ? "text-red-600 dark:text-red-400"
-              : "text-yellow-600 dark:text-yellow-300";
-
-            const dueDisplay = `<p class="text-sm text-blue-700 dark:text-blue-300 font-medium">
-              Amount to Collect: ZMW ${effectiveDue.toFixed(2)}
-            </p>`;
-
-            const paidDisplay = day.is_paid
-              ? `<p class="text-sm text-green-700 dark:text-green-400">
-                  Paid: ZMW ${paid.toFixed(2)}
-                </p>` : "";
-
-            const shortfallDisplay = shortfall > 0 && day.is_paid
-              ? `<p class="text-sm text-red-600 dark:text-red-400">
-                  Shortfall: ZMW ${shortfall.toFixed(2)}
-                </p>` : "";
-
-            const excessDisplay = excess > 0 && day.is_paid
-              ? `<p class="text-sm text-amber-600 dark:text-amber-400">
-                  Overpaid: ZMW ${excess.toFixed(2)}
-                </p>` : "";
-
-            const carryDisplay = !day.is_paid && carryApplied && carryForward !== 0
-              ? `<p class="text-sm italic text-amber-600 dark:text-amber-400">
-                  Carry Forward: ZMW ${carryForward.toFixed(2)}
-                </p>` : "";
-
-            const inputForm = showForm ? `
-              <form data-day-id="${day.id}" class="mark-paid-form mt-2 flex items-center gap-2">
-                <input 
-                  type="number" 
-                  name="amount_paid" 
-                  step="0.01" 
-                  placeholder="Enter amount"
-                  class="px-3 py-1 rounded border border-gray-300 dark:border-gray-700 dark:bg-surface-dark text-sm w-40 text-gray-100"
-                />
-                <input type="hidden" name="csrfmiddlewaretoken" value="${getCSRFToken()}">
-                <button 
-                  type="submit" 
-                  class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                >
-                  Mark as Paid
-                </button>
-              </form>
-            ` : "";
-
-            html.push(`
-              <div class="border-b border-gray-200 dark:border-gray-700 py-3">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="font-semibold ${statusColor}">${day.date} - ${status}</span>
-                </div>
-                <div class="ml-1 space-y-1">
-                  ${dueDisplay}
-                  ${paidDisplay}
-                  ${shortfallDisplay}
-                  ${excessDisplay}
-                  ${carryDisplay}
-                  ${inputForm}
-                </div>
-              </div>
-            `);
-
-            if (day.is_paid) {
-              carryForward = shortfall > 0 ? shortfall : (excess > 0 ? -excess : 0);
-            }
-          }
-
-          container.innerHTML = html.join("");
-          attachFormListeners();
-        } catch (e) {
-          console.error(e);
-          container.innerHTML = `<p class="text-red-500">Failed to load data.</p>`;
-        }
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
       }
 
       function attachFormListeners() {

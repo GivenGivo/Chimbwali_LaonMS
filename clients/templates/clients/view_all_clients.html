@@ -43,7 +43,6 @@
       <i class="fa-solid fa-house mr-1"></i> Back Home
     </a>
     {% if messages %}
-<<<<<<< HEAD
       <div id="popup-message-container" class="fixed top-8 left-1/2 transform -translate-x-1/2 z-50">
         {% for message in messages %}
         <div id="popup-message" class="mb-3 p-3 rounded-lg text-sm font-semibold shadow-lg transition-opacity duration-500
@@ -68,18 +67,6 @@
           }
         });
       </script>
-=======
-        <div class="p-4 max-w-xl mx-auto">
-      {% for message in messages %}
-      <div class="mb-3 p-3 rounded-lg text-sm font-semibold
-                  {% if message.tags == 'success' %}bg-green-100 text-green-700
-                  {% elif message.tags == 'error' %}bg-red-100 text-red-700
-                  {% else %}bg-gray-100 text-gray-800{% endif %}">
-        {{ message }}
-      </div>
-      {% endfor %}
-        </div>
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
     {% endif %}
 
   <body
@@ -144,14 +131,11 @@
                     </option>
                   {% endfor %}
                 </select>
-<<<<<<< HEAD
                   <!-- Status Filter Buttons -->
                   <input type="hidden" name="status" id="statusInput" value="{{ request.GET.status|default:'' }}" />
                   <button type="button" onclick="setStatusFilter('pending')" class="px-4 py-2 rounded-lg font-semibold bg-yellow-500 text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 {% if request.GET.status == 'pending' %}ring-2 ring-yellow-400{% endif %}">Pending</button>
                   <button type="button" onclick="setStatusFilter('approved')" class="px-4 py-2 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 {% if request.GET.status == 'approved' %}ring-2 ring-green-400{% endif %}">Approved</button>
                   <button type="button" onclick="setStatusFilter('')" class="px-4 py-2 rounded-lg font-semibold bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 {% if not request.GET.status %}ring-2 ring-gray-400{% endif %}">All</button>
-=======
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
               </form>
             </td>
           </tr>
@@ -182,20 +166,13 @@
                 {% endif %}
               </td>
 
-<<<<<<< HEAD
               <!-- <td class="px-4 py-3 text-center relative">
                 <div class="relative inline-block text-left">
                     <button onclick="openActionModal('{{ client.id }}')"
-=======
-              <td class="px-4 py-3 text-center relative">
-                <div class="relative inline-block text-left">
-                  <button onclick="toggleActionMenu({{ client.id }})"
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
                     class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white px-3 py-1 rounded-lg text-xs font-semibold">
                     Actions <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
                   </button>
 
-<<<<<<< HEAD
                 </div>
               </td> -->
               <td class="px-4 py-3 text-center">
@@ -268,45 +245,6 @@
         }
       });
     </script>
-=======
-                  <div id="actionMenu-{{ client.id }}"
-                    class="hidden absolute right-0 mt-2 w-40 bg-white dark:bg-gray-900 shadow-lg rounded-lg border dark:border-gray-700 z-50">
-                    
-                    <button onclick="openViewModal({{ client.id }})"
-                      class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-700 dark:hover:text-white">
-                      <i class="fa-solid fa-eye mr-1"></i> View
-                    </button>
-                    
-                    <button onclick="openEditModal({{ client.id }})"
-                      class="w-full text-left px-4 py-2 text-sm text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-700 dark:hover:text-white">
-                      <i class="fa-solid fa-pen mr-1"></i> Edit
-                    </button>
-                    
-                    <button onclick="confirmDeleteClient({{ client.id }})"
-                      class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-700 dark:hover:text-white">
-                      <i class="fa-solid fa-trash mr-1"></i> Delete
-                    </button>
-
-                    {% if not client.approved and not client.rejected %}
-                      <form method="POST" action="{% url 'approve_client' client.id %}">
-                        {% csrf_token %}
-                        <button type="submit"
-                          class="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-700 dark:hover:text-white">
-                          <i class="fa-solid fa-check mr-1"></i> Approve
-                        </button>
-                      </form>
-                      <form method="POST" action="{% url 'reject_client' client.id %}">
-                        {% csrf_token %}
-                        <button type="submit"
-                          class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-700 dark:hover:text-white">
-                          <i class="fa-solid fa-xmark mr-1"></i> Reject
-                        </button>
-                      </form>
-                    {% endif %}
-                  </div>
-                </div>
-              </td>
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
             </tr>
             {% empty %}
             <tr>
@@ -322,15 +260,12 @@
         </table>
       </div>
     </section>
-<<<<<<< HEAD
       <script>
         function setStatusFilter(status) {
           document.getElementById('statusInput').value = status;
           document.getElementById('filterForm').submit();
         }
       </script>
-=======
->>>>>>> e6bd43f81386a48e87fa5a3df4830c1ab872c271
     <script>
       document.getElementById("searchNRC").addEventListener("input", function () {
         const query = this.value.trim();
